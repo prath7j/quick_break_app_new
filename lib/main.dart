@@ -178,7 +178,7 @@ class SecondRoute extends StatelessWidget {
             // Navigate back to first route when tapped.
             //Navigator.pop(context);
           },
-          child: Text('Take 15 deep breaths'),
+          child: Text('Take 10 deep breaths'),
               style: ElevatedButton.styleFrom(
               primary: Colors.blue, // background
               onPrimary: Colors.white, // foreground
