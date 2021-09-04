@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-
-
+//Importing for firebase support
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+/*
 void main() {
+  runApp(MyApp());
+}
+
+ */
+//Sample main
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -140,6 +150,16 @@ class MyHomePage extends StatelessWidget {
           margin: const EdgeInsets.only(top: 25),
           child: new ElevatedButton(
             onPressed: () {
+
+              //Trying to get data from database
+              FirebaseFirestore.instance
+                  .collection("prompts")
+                  .doc("MUrAHs6oDJiqIBxMkLmJ")
+                  .get().then((value){
+                print(value.data().values.first);
+              });
+              //ending db try
+
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SecondRoute()),
