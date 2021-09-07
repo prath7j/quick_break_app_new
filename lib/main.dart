@@ -1,19 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //Importing for firebase support
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 /*
 void main() {
   runApp(MyApp());
 }
+*/
 
- */
 //Sample main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -151,13 +154,14 @@ class MyHomePage extends StatelessWidget {
           child: new ElevatedButton(
             onPressed: () {
 
-              //Trying to get data from database
+              /*Trying to get data from database
               FirebaseFirestore.instance
                   .collection("prompts")
                   .doc("MUrAHs6oDJiqIBxMkLmJ")
                   .get().then((value){
                 print(value.data().values.first);
               });
+              */
               //ending db try
 
               Navigator.push(
@@ -183,8 +187,56 @@ class MyHomePage extends StatelessWidget {
 
 
 class SecondRoute extends StatelessWidget {
+  String docId;
   @override
   Widget build(BuildContext context) {
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Quick Break"),
+        ),
+        body: FutureBuilder(
+          future: getTask(),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              Map<String, dynamic> data = snapshot.data.data() as Map<String, dynamic>;
+              String str = data['Task'];
+              print(str);
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 100,
+                    child: Text(
+                      data['Task'],
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ],
+              );
+            } else if (snapshot.connectionState == ConnectionState.none) {
+              return Text("No data");
+            }
+            return CircularProgressIndicator();
+          },
+        ));
+  }
+//test above
+
+/*
+  @override
+  Widget build(BuildContext context) {
+    String str;
+    String str1="hi";
+
+    //Get task from DB
+   Future f= FirebaseFirestore.instance
+        .collection("prompts")
+        .doc("MUrAHs6oDJiqIBxMkLmJ")
+        .get();
+
+    print(str);
     return Scaffold(
       appBar: AppBar(
         title: Text("Quick Break"),
@@ -198,7 +250,7 @@ class SecondRoute extends StatelessWidget {
             // Navigate back to first route when tapped.
             //Navigator.pop(context);
           },
-          child: Text('Take 10 deep breaths'),
+          child: Text(str1),
               style: ElevatedButton.styleFrom(
               primary: Colors.blue, // background
               onPrimary: Colors.white, // foreground
@@ -211,5 +263,17 @@ class SecondRoute extends StatelessWidget {
       ),
     ),
     );
+  }
+  */
+  Future<DocumentSnapshot> getTask() async {
+    //await Firebase.initializeApp();
+    int num = 5;
+    var random = new Random();
+    docId = random.nextInt(num).toString();
+    print(docId);
+    return await FirebaseFirestore.instance
+        .collection("prompts")
+        .doc(docId)
+        .get();
   }
 }
